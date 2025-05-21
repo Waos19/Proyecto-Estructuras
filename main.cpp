@@ -1,35 +1,35 @@
 //#include <SFML/Graphics.hpp>
 #include "Grafo.h"
-#include <iostream>
 
-using namespace std;
+int main() {
+    // Crear ventana SFML
+    sf::RenderWindow ventana(sf::VideoMode(800, 600), "Visualización de Grafo");
+    ventana.setFramerateLimit(60);
 
-int main()
-{
-    Grafo campus;
-
-    cout << "Cargando grafo..." << endl;
-
-    if (!campus.cargarGrafo("campus_graph.json"))
-    {
-        cerr << "No se pudo cargar el grafo." << endl;
+    // Crear e inicializar grafo
+    Grafo grafo;
+    if (!grafo.cargarGrafo("campus_graph.json")) {  // Asegúrate de tener este archivo
         return 1;
     }
 
-    int origen = 0;
-    int destino = 6;
+    // Bucle principal
+    while (ventana.isOpen()) {
+        sf::Event evento;
+        while (ventana.pollEvent(evento)) {
+            if (evento.type == sf::Event::Closed) {
+                ventana.close();
+            }
+        }
 
-    vector<int> predecesores;
-    vector<double> distancias = campus.caminoCorto(origen, predecesores);
+        // Limpiar ventana
+        ventana.clear(sf::Color::Black);
 
-    cout << "Distancia desde nodo " << origen << " hasta nodo " << destino << ": " << distancias[destino] << endl;
+        // Dibujar el grafo
+        grafo.Dibujar(ventana);
 
-    vector<int> camino = campus.reconstruirCamino(destino, predecesores);
-    cout << "Camino más corto: ";
-    for (int id : camino)
-    {
-        cout << id << " ";
+        // Mostrar lo dibujado
+        ventana.display();
     }
-    cout << endl;
+
     return 0;
 }

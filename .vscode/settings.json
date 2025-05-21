@@ -1,5 +1,21 @@
 {
-    "files.associations": {
-        "iosfwd": "cpp"
-    }
+    "workbench.colorTheme": "SynthWave '84",
+    "C_Cpp.default.compilerPath": "C:/msys64/mingw64/bin/g++.exe",
+    "C_Cpp.default.includePath": [
+        "${workspaceFolder}/**",
+        "C:/msys64/mingw64/include/**"
+    ],
+    "terminal.integrated.profiles.windows": {
+        "MSYS2 MinGW 64-bit": {
+            "path": "C:\\msys64\\msys2_shell.cmd",
+            "args": [
+                "-defterm",
+                "-here",
+                "-no-start",
+                "-mingw64"
+            ],
+            "icon": "terminal-bash"
+        }
+    },
+    "terminal.integrated.defaultProfile.windows": "MSYS2 MinGW 64-bit"
 }

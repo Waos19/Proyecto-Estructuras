@@ -116,3 +116,34 @@ vector<int> Grafo::reconstruirCamino(int destino, const vector<int> &predecesore
     reverse(camino.begin(), camino.end());
     return camino;
 }
+
+void Grafo::Dibujar(sf::RenderWindow &ventana)
+{
+    for (size_t i = 0; i < nodos.size(); ++i)
+    {
+        sf::CircleShape nodoForma(5);
+        nodoForma.setFillColor(sf::Color::Blue);
+
+        float x = static_cast<float>(nodos[i].x * 10000); // escala
+        float y = static_cast<float>(nodos[i].y * 10000);
+
+        nodoForma.setPosition(sf::Vector2f(x, y));
+        ventana.draw(nodoForma);
+
+        // Dibuja aristas desde este nodo
+        for (const auto &vecino : adyacencias[i])
+        {
+            int j = vecino.first;
+            if (j > i) // para no dibujar dos veces cada arista
+            {
+                sf::Vertex linea[] =
+                {
+                    sf::Vertex(sf::Vector2f(x + 5, y + 5), sf::Color::White),
+                    sf::Vertex(sf::Vector2f(static_cast<float>(nodos[j].x * 10000 + 5),
+                                            static_cast<float>(nodos[j].y * 10000 + 5)), sf::Color::White)
+                };
+                ventana.draw(linea, 2, sf::LineStrip);
+            }
+        }
+    }
+}
