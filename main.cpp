@@ -1,21 +1,17 @@
-#include <SFML/Graphics.hpp>
+//#include <SFML/Graphics.hpp>
+#include "Grafo.h"
+#include <iostream>
+
+using namespace std;
 
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode({200, 200}), "SFML works!");
-    sf::CircleShape shape(100.f);
-    shape.setFillColor(sf::Color::Green);
-
-    while (window.isOpen())
+    Grafo campus;
+    cout << "Cargando grafo..." << endl;
+    if(campus.cargarGrafo("campus_graph.json"))
     {
-        while (const std::optional event = window.pollEvent())
-        {
-            if (event->is<sf::Event::Closed>())
-                window.close();
-        }
-
-        window.clear();
-        window.draw(shape);
-        window.display();
+        cout << "Grafo cargado correctamente." << endl;
+        campus.mostrarConexiones(1); // Muestra las conexiones del nodo con ID 0
     }
+    return 0;
 }
