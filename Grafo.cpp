@@ -36,7 +36,7 @@ bool Grafo::cargarGrafo(const string &nombreArchivo)
         int origen = arista["from"];
         int destino = arista["to"];
         double peso = arista["weight"];
-        
+
         if (origen < adyacencias.size() && destino < adyacencias.size())
         {
             adyacencias[origen].emplace_back(destino, peso);
@@ -73,3 +73,46 @@ void Grafo::mostrarConexiones(int idNodo)
     }
 }
 
+vector<double> Grafo::caminoCorto(int origen, vector<int> predecesores)
+{
+    const double INFINITO = 1e9;
+    int n = nodos.size();
+    vector<double> distancias(n, INFINITO);
+    predecesores.resize(n, -1);
+    distancias[origen] = 0.0;
+
+    priority_queue<pair<double, int>, vector<pair<double, int>>, greater<>> pq;
+    pq.emplace(0.0, origen);
+
+    while (!pq.empty())
+    {
+        auto [distActual, u] = pq.top();
+        pq.pop();
+
+        if (distActual > distancias[u]) continue;
+
+        for (const auto& [v, peso] : adyacencias[u])
+        {
+            double nuevaDistancia = distancias[u] + peso;
+            if (nuevaDistancia < distancias[v])
+            {
+                distancias[v] = nuevaDistancia;
+                predecesores[v] = u;
+                pq.emplace(nuevaDistancia, v);
+            }
+        }
+    }
+
+    return distancias;
+}
+
+vector<int> Grafo::reconstruirCamino(int destino, const vector<int> &predecesores)
+{
+    vector<int> camino;
+    for (int at = destino; at != -1; at = predecesores[at])
+    {
+        camino.push_back(at);
+    }
+    reverse(camino.begin(), camino.end());
+    return camino;
+}
