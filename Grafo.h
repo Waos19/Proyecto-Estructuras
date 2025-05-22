@@ -21,9 +21,9 @@ class Grafo
         vector<Nodo> getNodos() const;
         bool cargarGrafo(const string& nombreArchivo);
         void mostrarConexiones(int idNodo);
-        vector<double> caminoCorto(int origen, vector<int>predecesores);
+        vector<double> caminoCorto(int origen, vector<int> &predecesores);
         vector<int> reconstruirCamino(int destino, const vector<int>& predecesores);
-        void Dibujar(sf::RenderWindow &ventana);
+        void Dibujar(sf::RenderWindow &ventana, const vector<int>& camino = {});
 
 };
 

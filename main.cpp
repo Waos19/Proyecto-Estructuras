@@ -1,33 +1,33 @@
-//#include <SFML/Graphics.hpp>
+#include <SFML/Graphics.hpp>
+#include <iostream>
 #include "Grafo.h"
 
-int main() {
-    // Crear ventana SFML
-    sf::RenderWindow ventana(sf::VideoMode(800, 600), "Visualización de Grafo");
-    ventana.setFramerateLimit(60);
-
-    // Crear e inicializar grafo
+int main()
+{
     Grafo grafo;
-    if (!grafo.cargarGrafo("campus_graph.json")) {  // Asegúrate de tener este archivo
+
+    if (!grafo.cargarGrafo("campus_graph.json"))
+    {
+        std::cerr << "Error al cargar el grafo." << std::endl;
         return 1;
     }
 
-    // Bucle principal
-    while (ventana.isOpen()) {
+    sf::RenderWindow ventana(sf::VideoMode(800, 600), "Visualizacion del Grafo");
+
+    while (ventana.isOpen())
+    {
         sf::Event evento;
-        while (ventana.pollEvent(evento)) {
-            if (evento.type == sf::Event::Closed) {
+        while (ventana.pollEvent(evento))
+        {
+            if (evento.type == sf::Event::Closed)
                 ventana.close();
-            }
         }
 
-        // Limpiar ventana
         ventana.clear(sf::Color::Black);
 
-        // Dibujar el grafo
-        grafo.Dibujar(ventana);
+        // Dibujar el grafo con un camino vacío
+        grafo.Dibujar(ventana, {});
 
-        // Mostrar lo dibujado
         ventana.display();
     }
 
