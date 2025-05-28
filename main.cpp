@@ -1,33 +1,38 @@
-#include <SFML/Graphics.hpp>
-#include <iostream>
+#include "Interfaz.h"
 #include "Grafo.h"
+#include <SFML/Graphics.hpp>
 
-int main()
-{
-    Grafo grafo;
+int main() {
+    // Crear ventana
+    sf::RenderWindow ventana(sf::VideoMode(1200, 800), "Visualizador de Grafo del Campus");
+    
+    // Cargar grafo desde JSON
+    Grafo grafo("campus_graph.json");
+    
+    // Crear interfaz visual
+    Interfaz interfaz(grafo);
 
-    if (!grafo.cargarGrafo("campus_graph.json"))
-    {
-        std::cerr << "Error al cargar el grafo." << std::endl;
-        return 1;
-    }
+    // Definir un camino de ejemplo (usar IDs reales de tu JSON)
+    std::vector<std::string> caminoEjemplo = {
+        "12832500514",  // Bench
+        "12832500515",  // Waste basket
+        "12839112483"   // Bench
+    };
 
-    sf::RenderWindow ventana(sf::VideoMode(800, 600), "Visualizacion del Grafo");
-
-    while (ventana.isOpen())
-    {
+    // Bucle principal
+    while (ventana.isOpen()) {
         sf::Event evento;
-        while (ventana.pollEvent(evento))
-        {
-            if (evento.type == sf::Event::Closed)
+        while (ventana.pollEvent(evento)) {
+            if (evento.type == sf::Event::Closed) {
                 ventana.close();
+            }
         }
 
-        ventana.clear(sf::Color::Black);
-
-        // Dibujar el grafo con un camino vacío
-        grafo.Dibujar(ventana, {});
-
+        ventana.clear(sf::Color(240, 240, 240)); // Fondo gris claro
+        
+        // Dibujar el grafo
+        interfaz.dibujarGrafo(ventana, caminoEjemplo);
+        
         ventana.display();
     }
 

@@ -1,7 +1,7 @@
 # Configuración básica
 CC = g++
 TARGET = programa.exe
-SRC = main.cpp Grafo.cpp Nodo.cpp
+SRC = main.cpp Grafo.cpp Nodo.cpp Interfaz.cpp
 OBJ = $(SRC:.cpp=.o)
 
 # Flags para SFML (MinGW-w64)
