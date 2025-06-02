@@ -21,8 +21,8 @@ public:
     Grafo(const string& jsonFilePath);
     
     // Métodos de acceso
-    const vector<Nodo>& getNodos() const;
-    const unordered_map<string, vector<pair<string, double>>>& getAdyacencias() const;
+    vector<Nodo>& getNodos();
+    unordered_map<string, vector<pair<string, double>>>& getAdyacencias();
     int encontrarIndiceNodo(const string& id) const;
 
 private:

@@ -31,3 +31,26 @@ string Nodo::getType() const
 {
     return type;
 }
+
+void Nodo::setLatitud(double lat)
+{
+    this -> latitud = lat;
+}
+
+void Nodo::setLongitud(double lon)
+{
+    this -> longitud = lon;
+}
+
+void Nodo::setNombre(const string &nombre)
+{
+    this->nombre = nombre;
+}
+void Nodo::setAmenity(const string &amenity)
+{
+    this->amenity = amenity;
+}
+void Nodo::setType(const string &type)
+{
+    this->type = type;
+}

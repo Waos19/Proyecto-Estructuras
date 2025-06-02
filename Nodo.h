@@ -16,6 +16,12 @@ class Nodo
         string getNombre() const;
         string getAmenity() const;
         string getType() const;
+        void setLatitud(double lat);
+        void setLongitud(double lon);
+        void setNombre(const string& nombre);
+        void setAmenity(const string& amenity);
+        void setType(const string& type);
+        
 
 };
 

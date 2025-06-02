@@ -23,7 +23,11 @@ int main() {
     while (ventana.isOpen()) {
         sf::Event evento;
         while (ventana.pollEvent(evento)) {
+            interfaz.manejarEventoZoom(evento);
+            interfaz.manejarEventoMapa(ventana, evento);
+            interfaz.manejarEventoMouse(ventana, evento);
             if (evento.type == sf::Event::Closed) {
+
                 ventana.close();
             }
         }

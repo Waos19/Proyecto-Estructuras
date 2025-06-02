@@ -70,11 +70,13 @@ void Grafo::procesarArista(const json& aristaJson) {
     }
 }
 
-const vector<Nodo>& Grafo::getNodos() const {
+vector<Nodo>& Grafo::getNodos()
+{
     return nodos;
 }
 
-const unordered_map<string, vector<pair<string, double>>>& Grafo::getAdyacencias() const {
+unordered_map<string, vector<pair<string, double>>>& Grafo::getAdyacencias()
+{
     return Adyacencias;
 }
 
