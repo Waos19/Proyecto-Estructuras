@@ -1,28 +1,23 @@
 #ifndef NODO_H
 #define NODO_H
+
 #include <iostream>
+#include <unordered_map>
 using namespace std;
+
+
 
 class Nodo
 {
     public:
-        string id;
-        double latitud, longitud;
-        string nombre, amenity, type;
-        Nodo(string id, double x, double y, string nombre, string amenity, string type);
-        string getId() const;
-        double getLatitud() const;
-        double getLongitud() const;
-        string getNombre() const;
-        string getAmenity() const;
-        string getType() const;
-        void setLatitud(double lat);
-        void setLongitud(double lon);
-        void setNombre(const string& nombre);
-        void setAmenity(const string& amenity);
-        void setType(const string& type);
-        
+        long long id;
+        double latitud;
+        double longitud;
+        unordered_map<long long, double> vecinos;
 
+        Nodo() : id(-1), latitud(0.0), longitud(0.0) {}
+        Nodo(long long id, double latitud, double longitud);
+        void agregarVecino(long long idVecino, double peso);
 };
 
 

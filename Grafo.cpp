@@ -1,90 +1,88 @@
 #include "Grafo.h"
-#include <fstream>
-#include <iostream>
-#include <stdexcept>
 
-Grafo::Grafo(const string& jsonFilePath) {
-    try {
-        ifstream inputFile(jsonFilePath);
-        if (!inputFile.is_open()) {
-            throw runtime_error("No se pudo abrir el archivo JSON: " + jsonFilePath);
-        }
+void Grafo::cargarGrafo(const string &nombreArchivo) {
+    ifstream archivo(nombreArchivo);
+    if (!archivo.is_open()) {
+        cerr << "No se pudo abrir el archivo." << endl;
+        return;
+    }
 
-        json jsonData;
-        inputFile >> jsonData;
-        cargarDesdeJSON(jsonData);
+    int nNodos;
+    archivo >> nNodos;
 
-        cout << "Grafo cargado exitosamente. Nodos: " << nodos.size() 
-                << ", Aristas: " << Adyacencias.size() << endl;
-    } catch (const exception& e) {
-        cerr << "Error al cargar el grafo: " << e.what() << endl;
-        throw;
+    for (int i = 0; i < nNodos; ++i) {
+        long long id;
+        double lat, lon;
+        archivo >> id >> lat >> lon;
+        agregarNodo(id, lat, lon);
+    }
+
+    cout << "Nodos cargados: " << nodos.size() << endl;
+
+
+    int nAristas;
+    archivo >> nAristas;
+
+    for (int i = 0; i < nAristas; ++i) {
+        long long id1, id2;
+        double peso;
+        archivo >> id1 >> id2 >> peso;
+        agregarArista(id1, id2, peso);
+    }
+
+    archivo.close();
+}
+
+void Grafo::agregarNodo(long long id, double latitud, double longitud) {
+    nodos.emplace(id, Nodo(id, latitud, longitud));
+}
+
+void Grafo::agregarArista(long long idOrigen, long long idDestino, double peso) {
+    nodos[idOrigen].agregarVecino(idDestino, peso);
+    nodos[idDestino].agregarVecino(idOrigen, peso);
+}
+
+void Grafo::imprimirGrafo() {
+    for (const auto& [id, nodo] : nodos) {
+        cout << "Nodo " << id << " (" << nodo.latitud << ", " << nodo.longitud << ") -> ";
+        for (const auto& [vecino_id, peso] : nodo.vecinos)
+            cout << vecino_id << "(" << peso << ") ";
+        cout << endl;
     }
 }
 
-void Grafo::cargarDesdeJSON(const json& jsonData) {
-    // Cargar nodos
-    if (!jsonData.contains("nodes")) {
-        throw runtime_error("El JSON no contiene la sección 'nodes'");
-    }
-    for (const auto& nodoJson : jsonData["nodes"]) {
-        procesarNodo(nodoJson);
-    }
+vector<long long> Grafo::dijkstra(long long origen, long long destino) {
+    unordered_map<long long, double> distancias;
+    unordered_map<long long, long long> anteriores;
+    priority_queue<pair<double, long long>, vector<pair<double, long long>>, greater<>> cola;
 
-    // Cargar aristas
-    if (!jsonData.contains("edges")) {
-        throw runtime_error("El JSON no contiene la sección 'edges'");
-    }
-    for (const auto& aristaJson : jsonData["edges"]) {
-        procesarArista(aristaJson);
-    }
-}
+    for (const auto& [id, _] : nodos)
+        distancias[id] = numeric_limits<double>::infinity();
 
-void Grafo::procesarNodo(const json& nodoJson) {
-    try {
-        Nodo nuevoNodo(
-            nodoJson["id"].get<string>(),
-            nodoJson["lat"].get<double>(),
-            nodoJson["lon"].get<double>(),
-            nodoJson.value("name", ""),
-            nodoJson.value("amenity", ""),
-            nodoJson["type"].get<string>()
-        );
-        nodos.push_back(nuevoNodo);
-    } catch (const exception& e) {
-        cerr << "Error al procesar nodo: " << e.what() << endl;
-    }
-}
+    distancias[origen] = 0;
+    cola.emplace(0, origen);
 
-void Grafo::procesarArista(const json& aristaJson) {
-    try {
-        string origen = aristaJson["source"];
-        string destino = aristaJson["target"];
-        double peso = aristaJson["weight"];
-        
-        // Agregar en ambas direcciones para grafo no dirigido
-        Adyacencias[origen].emplace_back(destino, peso);
-        Adyacencias[destino].emplace_back(origen, peso);
-    } catch (const exception& e) {
-        cerr << "Error al procesar arista: " << e.what() << endl;
-    }
-}
+    while (!cola.empty()) {
+        auto [dist, actual] = cola.top(); cola.pop();
 
-vector<Nodo>& Grafo::getNodos()
-{
-    return nodos;
-}
+        if (actual == destino) break;
 
-unordered_map<string, vector<pair<string, double>>>& Grafo::getAdyacencias()
-{
-    return Adyacencias;
-}
-
-int Grafo::encontrarIndiceNodo(const string& id) const {
-    for (size_t i = 0; i < nodos.size(); ++i) {
-        if (nodos[i].getId() == id) {
-            return static_cast<int>(i);
+        for (const auto& [vecino, peso] : nodos[actual].vecinos) {
+            double nueva_dist = dist + peso;
+            if (nueva_dist < distancias[vecino]) {
+                distancias[vecino] = nueva_dist;
+                anteriores[vecino] = actual;
+                cola.emplace(nueva_dist, vecino);
+            }
         }
     }
-    return -1;
+
+    vector<long long> ruta;
+    if (!anteriores.count(destino)) return ruta;
+
+    for (long long at = destino; at != origen; at = anteriores[at])
+        ruta.push_back(at);
+    ruta.push_back(origen);
+    reverse(ruta.begin(), ruta.end());
+    return ruta;
 }

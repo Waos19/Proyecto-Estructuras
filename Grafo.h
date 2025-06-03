@@ -1,34 +1,22 @@
 #ifndef GRAFO_H
 #define GRAFO_H
 
-#include <vector>
-#include <unordered_map>
-#include <string>
-#include <utility>
 #include "Nodo.h"
-#include "json.hpp" 
+#include <unordered_map>
+#include <fstream>
+#include <queue>
+#include <limits>
+#include <algorithm>
 
-using namespace std;
-using json = nlohmann::json;
-
-class Grafo {
-private:
-    vector<Nodo> nodos;
-    unordered_map<string, vector<pair<string, double>>> Adyacencias;
-
-public:
-    // Constructor que carga desde JSON
-    Grafo(const string& jsonFilePath);
-    
-    // Métodos de acceso
-    vector<Nodo>& getNodos();
-    unordered_map<string, vector<pair<string, double>>>& getAdyacencias();
-    int encontrarIndiceNodo(const string& id) const;
-
-private:
-    // Métodos de carga interna
-    void cargarDesdeJSON(const json& jsonData);
-    void procesarNodo(const json& nodoJson);
-    void procesarArista(const json& aristaJson);
+class Grafo
+{
+    public:
+        unordered_map<long long, Nodo> nodos;
+        void cargarGrafo(const string& nombreArchivo);
+        void agregarNodo(long long id, double latitud, double longitud);
+        void agregarArista(long long idOrigen, long long idDestino, double peso);
+        void imprimirGrafo();
+        vector<long long> dijkstra(long long origen, long long destino);
 };
+
 #endif
